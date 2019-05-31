@@ -1,0 +1,46 @@
+{
+  "name": "oja-context-provider",
+  "version": "1.0.0",
+  "description": "Provides a folder based resolution of domain and actions for oja/context",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test",
+    "test-coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
+    "lint": "eslint --quiet -c .eslintrc *.js",
+    "lint-fix": "eslint --fix *.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dimichgh/oja-context-provider.git"
+  },
+  "keywords": [
+    "oja",
+    "flow",
+    "busness",
+    "logic",
+    "dependency",
+    "injection"
+  ],
+  "author": "Dmytro Semenov <dimichsdg@yahoo.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dimichgh/oja-context-provider/issues"
+  },
+  "homepage": "https://github.com/dimichgh/oja-context-provider#readme",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-ebay": "^1.0.0",
+    "eslint-plugin-mocha": "^5.3.0",
+    "istanbul": "1.1.0-alpha.1",
+    "mocha": "^6.1.4",
+    "oja": "^1.2.0"
+  },
+  "dependencies": {
+    "lodash.defaultsdeep": "^4.6.0",
+    "shortstop": "^1.0.3",
+    "shortstop-handlers": "^1.0.1"
+  }
+}
