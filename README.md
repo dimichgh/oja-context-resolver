@@ -1,7 +1,13 @@
 # oja-context-provider
 
-Provides a folder based resolution of domain and actions for oja/context.
+Provides a folder based resolution of domain and actions for [oja/context](https://github.com/dimichgh/oja).
 It assumes the app already have oja installed and available via a simple require resolution or can be provided as a createContext option.
+
+[![codecov](https://codecov.io/gh/dimichgh/oja-context-provider/branch/master/graph/badge.svg)](https://codecov.io/gh/dimichgh/oja-context-provider)
+[![Build Status](https://travis-ci.org/dimichgh/oja-context-provider.svg?branch=master)](https://travis-ci.org/dimichgh/oja-context-provider) [![NPM](https://img.shields.io/npm/v/oja-context-provider.svg)](https://www.npmjs.com/package/oja-context-provider)
+[![Downloads](https://img.shields.io/npm/dm/oja-context-provider.svg)](http://npm-stat.com/charts.html?package=oja-context-provider)
+[![Known Vulnerabilities](https://snyk.io/test/github/dimichgh/oja-context-provider/badge.svg)](https://snyk.io/test/github/dimichgh/oja-context-provider)
+[![Greenkeeper badge](https://badges.greenkeeper.io/dimichgh/oja-context-provider.svg)](https://greenkeeper.io/)
 
 ## Install
 
