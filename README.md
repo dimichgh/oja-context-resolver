@@ -72,18 +72,48 @@ The resolution of actions are done via initial initialization of the provider, w
 const createProvider = require('oja-context-provider')();
 
 // create provider one time or many times
-// the same folder will be cached
+// one should use it only once to avoid re-reading the same folder structure
+const provider = createProvider([
+    {
+        source: 'path:src',
+        filter: 'path:src/my-action-filter' // optional, use of fileFilter function
+    },
+    {
+        source: 'path:src/other-actions',
+        filter: 'regexp:-action\\.js$' // optional, use of regexp as a filter and
+                                         // in this case match all files that end with -action.js
+    }
+], {
+    contextFactory, // allows a nice way to inject your version of oja context implementation
+    baseDir, // process.cwd() by default
+});
+```
+Or simpler way when no filter is needed
+
+```js
+const createProvider = require('oja-context-provider')();
+
+// create provider one time or many times
+// one should use it only once to avoid re-reading the same folder structure
 const provider = createProvider([
     'path:src',
     'path:src/other-actions'
 ], {
     contextFactory, // allows a nice way to inject your version of oja context implementation
     baseDir, // process.cwd() by default
-    fileFilter // async filePath => true|false
 });
 ```
 
+
 Where:
 * baseDir is the location from where the path: shortstop handler will start path resolution
-* fileFiler is a function that allows a user to decide if the given file is action (true) or not (false)
+* filter is a function that allows a user to decide if the given file is action (true) or not (false)
 * contextFactory is oja/context implementation injection
+
+### File filter API
+
+```js
+async filePath => true|flase;
+```
+
+Note that the function is async and one can do async action before returning.

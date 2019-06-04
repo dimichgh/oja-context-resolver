@@ -26,6 +26,10 @@ module.exports = async (locations, options = {}) => {
     // eslint-disable-next-line no-param-reassign
     const resolver = Shortstop.create();
     resolver.use('path', Handlers.path(baseDir));
+    resolver.use('regexp', expStr => {
+        const exp = new RegExp(expStr);
+        return context => exp.test(context);
+    });
 
     let discoveredActions = {};
     if (locations) {
@@ -53,7 +57,7 @@ module.exports = async (locations, options = {}) => {
         for (let index = 0; index < locationDomains.length; index++) {
             const { location, domains } = locationDomains[index];
             await Promise.all(domains.map(async domain => {
-                const acts = await getActions(Path.resolve(location, domain.path));
+                const acts = await getActions(domain.path, location.filter);
                 const domainName = domain.name;
 
                 if (acts.length) {
@@ -66,20 +70,27 @@ module.exports = async (locations, options = {}) => {
             }));
         }
         return result;
-    };
-
-    function getDomains(location) {
-        return getFiles(location, async filePath => !(await stat(filePath)).isFile());
     }
 
-    function getActions(location) {
-        return getFiles(location, async filePath => {
+    function getDomains(location) {
+        return getFiles(location.source || location, async filePath => !(await stat(filePath)).isFile());
+    }
+
+    function getActions(domainPath, filter) {
+        filter = filter && (typeof filter === 'string' ?
+            require(filter) : // resolve function filter
+            filter) || // regexp
+            defaultFilter; // default
+
+        return getFiles(domainPath, filter);
+
+        async function defaultFilter(filePath) {
             let fileStat = await stat(filePath);
             if (!fileStat.isFile() && await fileExists(Path.join(filePath, 'index.js'))) {
                 fileStat = await stat(Path.join(filePath, 'index.js'));
             }
             return fileStat.isFile() && await fileFilter(filePath);
-        });
+        }
     }
 
     async function getFiles(location, filter) {

@@ -90,24 +90,33 @@ describe(__filename, () => {
 
     it('should filter out files from actions', async () => {
         const createContext = await createProvider([
-            'path:fixtures/app/src/actions',
-            'path:fixtures/app/src/other-actions'
+            {
+                source: 'path:fixtures/app/src/actions',
+                filter: filePath => /foo\.js$/.test(filePath)
+            },
+            {
+                source: 'path:fixtures/app/src/other-actions',
+                filter: 'path:fixtures/app/src/bar-filter'
+            },
+            {
+                source: 'path:fixtures/app/src/actions',
+                filter: 'regexp:rfv\\.js$'
+            }
         ], {
-            baseDir: __dirname,
-            fileFilter: filePath => !/(foo|rfv|bar)\.js/.test(filePath)
+            baseDir: __dirname
         });
 
         const context = await createContext();
-
-        Assert.ok(context.controllers);
+        Assert.ok(!context.controllers);
         Assert.ok(context.domain1);
-        Assert.ok(context.domain1.qaz);
-        // should merge actions found in different location under the same domain name
-        Assert.ok(context.domain1.qwe);
         Assert.ok(context.domain2);
-        Assert.ok(context.domain2.edc);
-        Assert.ok(context.domain3);
-        Assert.ok(context.domain3.wsx);
+        Assert.ok(!context.domain3);
+        Assert.ok(context.domain1.foo);
+        Assert.ok(context.domain1.bar);
+        Assert.ok(context.domain2.rfv);
+        Assert.equal('hello from foo', context.domain1.foo());
+        Assert.equal('hello from bar (other actions)', context.domain1.bar());
+        Assert.equal('hello from rfv', context.domain2.rfv());
     });
 
     it('should resolve path/require in in-line options passed to context creation method', async () => {
