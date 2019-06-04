@@ -5,6 +5,22 @@ const Path = require('path');
 const createProvider = require('..');
 
 describe(__filename, () => {
+    it('should create a provider without locations and use only in-line', async () => {
+        const createContext = await createProvider();
+
+        const ctx = await createContext({
+            functions: {
+                actions: {
+                    foo() {
+                        return 'hello';
+                    }
+                }
+            }
+        });
+
+        Assert.equal('hello', await ctx.actions.foo());
+    });
+
     it('should discover actions from a single source', async () => {
         const createContext = await createProvider([
             'path:fixtures/app/src/actions'
@@ -119,14 +135,39 @@ describe(__filename, () => {
         Assert.equal('hello from rfv', context.domain2.rfv());
     });
 
+    it('should filter out files from actions, using cwd', async () => {
+        const createContext = await createProvider([
+            {
+                source: 'path:test/fixtures/app/src/actions',
+                filter: filePath => /foo\.js$/.test(filePath)
+            },
+            {
+                source: 'path:test/fixtures/app/src/other-actions',
+                filter: 'path:test/fixtures/app/src/bar-filter'
+            },
+            {
+                source: 'path:test/fixtures/app/src/actions',
+                filter: 'regexp:rfv\\.js$'
+            }
+        ]);
+
+        const context = await createContext();
+        Assert.ok(!context.controllers);
+        Assert.ok(context.domain1);
+        Assert.ok(context.domain2);
+        Assert.ok(!context.domain3);
+        Assert.ok(context.domain1.foo);
+        Assert.ok(context.domain1.bar);
+        Assert.ok(context.domain2.rfv);
+        Assert.equal('hello from foo', context.domain1.foo());
+        Assert.equal('hello from bar (other actions)', context.domain1.bar());
+        Assert.equal('hello from rfv', context.domain2.rfv());
+    });
+
     it('should resolve path/require in in-line options passed to context creation method', async () => {
-        let createContext = await createProvider({
-            function: {}
-        });
+        let createContext = await createProvider();
 
-        let ctx = createContext();
-
-        ctx = createContext({
+        let ctx = await createContext({
             functions: {
                 actions: {
                     foo() {
@@ -138,7 +179,9 @@ describe(__filename, () => {
 
         Assert.equal('hello', await ctx.actions.foo());
 
-        createContext = await createProvider({
+        createContext = await createProvider();
+
+        ctx = createContext({
             functions: {
                 actions: {
                     foo() {
@@ -147,8 +190,6 @@ describe(__filename, () => {
                 }
             }
         });
-
-        ctx = createContext();
         Assert.equal('hello', await ctx.actions.foo());
 
         ctx = createContext({

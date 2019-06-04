@@ -12,10 +12,6 @@ const readdir = promisify(Fs.readdir);
 const fileExists = promisify(Fs.exists);
 
 module.exports = async (locations, options = {}) => {
-    if (!Array.isArray(locations)) {
-        options = locations;
-        locations = undefined;
-    }
     const {
         contextContext = require('oja/context'), // better way to inject their version of oja/context
         baseDir = process.cwd(),
@@ -45,6 +41,7 @@ module.exports = async (locations, options = {}) => {
 
     async function resolveActions() {
         const result = {};
+
         // collect domains
         const locationDomains = await Promise.all(locations.map(async location => {
             const domains = await getDomains(location);
