@@ -1,9 +1,12 @@
 .eslintrc
 .eslintignore
 .gitignore
+.npmignore
+.travis.yml
 docs
 test
 .git
 yarn.lock
+yarn-error.log
 package-lock.json
 coverage
