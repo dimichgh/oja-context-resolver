@@ -29,6 +29,7 @@ module.exports = async (locations, options = {}) => {
 
     let discoveredActions = {};
     if (locations) {
+        // eslint-disable-next-line no-param-reassign
         locations = await promisify(resolver.resolve.bind(resolver))(locations);
         const actions = await resolveActions();
         discoveredActions = {
@@ -36,8 +37,13 @@ module.exports = async (locations, options = {}) => {
         };
     }
 
-    return config => contextContext(
-        defaultsDeep({}, config, { functions }, discoveredActions));
+    return (runtimeOptions = {}) => contextContext({
+        properties: runtimeOptions.properties, // we should not deep clone it
+        functions: defaultsDeep({}, // deep merge domain->actions
+            runtimeOptions.functions,
+            functions,
+            discoveredActions.functions)
+    });
 
     async function resolveActions() {
         const result = {};

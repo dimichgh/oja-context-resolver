@@ -1,12 +1,38 @@
 'use strict';
 
 const Assert = require('assert');
-const Path = require('path');
 const createProvider = require('..');
 
 describe(__filename, () => {
     it('should create a provider without locations and use only in-line', async () => {
         const createContext = await createProvider();
+
+        const ref = new Object();
+        const inlineOptions = {
+            functions: {
+                actions: {
+                    foo() {
+                        return 'hello';
+                    }
+                }
+            },
+            properties: {
+                ref
+            }
+        };
+
+        const ctx = await createContext(inlineOptions);
+        Assert.equal('hello', await ctx.actions.foo());
+
+        const ctx2 = await createContext(inlineOptions);
+        // lazy proxy instance created every time
+        Assert.ok(ctx2.actions.foo !== ctx.actions.foo);
+        // properties should be shared
+        Assert.ok(ctx2.ref === ctx.ref);
+    });
+
+    it('should create a provider with undefined locations and use only in-line', async () => {
+        const createContext = await createProvider(undefined);
 
         const ctx = await createContext({
             functions: {
