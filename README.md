@@ -88,7 +88,7 @@ const provider = createProvider([
     baseDir, // process.cwd() by default
 });
 ```
-Or simpler way when no filter is needed
+Or a simpler way when no filter is needed
 
 ```js
 const createProvider = require('oja-context-provider')();
