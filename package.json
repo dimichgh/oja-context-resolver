@@ -42,5 +42,8 @@
     "lodash.defaultsdeep": "^4.6.0",
     "shortstop": "^1.0.3",
     "shortstop-handlers": "^1.0.1"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }
