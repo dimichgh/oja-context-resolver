@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/dimichgh/oja-context-provider#readme",
   "devDependencies": {
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.1",
     "eslint-config-ebay": "^1.0.0",
     "eslint-plugin-mocha": "^5.3.0",
     "istanbul": "1.1.0-alpha.1",
